@@ -34,7 +34,7 @@ public class LoginServlet extends HttpServlet {
                 userName.setMaxAge(30 * 60);
                 response.addCookie(userName);
                 PrintWriter out = response.getWriter();
-                out.println("Welcome back to the team, " + log + "!");
+                out.println("Welcome back to the team, " + log + "!" + "You using Map for save your login and password!");
             } else {
                 PrintWriter out = response.getWriter();
                 out.println("Either user name or password is wrong!");
