@@ -5,8 +5,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
+
 
 /**
  * Servlet implementation class LoginServlet
@@ -20,13 +19,10 @@ public class LoginServlet extends HttpServlet {
 
         String log = request.getParameter("user");
         String pwd = request.getParameter("pwd");
+        LoginRepository.initMapUser();
 
-        Map<String, String> usersMap = new HashMap<>();
-        usersMap.put("admin", "password");
-        usersMap.put("vlad", "vlad");
 
-        for (Map.Entry<String, String> kv : usersMap.entrySet()) {
-            if (kv.getKey().equals(log) && kv.getValue().equals(pwd)) {
+            if (LoginRepository.chekMapUser(log,pwd)) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", "user");
                 //setting session to expiry in 30 min
@@ -42,7 +38,6 @@ public class LoginServlet extends HttpServlet {
             }
         }
     }
-}
 
 
 
