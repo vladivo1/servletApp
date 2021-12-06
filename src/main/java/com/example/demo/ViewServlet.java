@@ -20,7 +20,12 @@ public class ViewServlet extends HttpServlet {
         List<Employee> list = EmployeeRepository.getAllEmployees();
 
         for (Employee employee : list) {
-            out.print(employee);
+            if (!employee.isStatus()) {
+                out.print(employee);
+            } else {
+                out.print( "Account with ID " + employee.getId() + " has been delete\n");
+            }
+
         }
         out.close();
     }

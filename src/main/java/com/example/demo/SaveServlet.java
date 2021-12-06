@@ -34,12 +34,12 @@ public class SaveServlet extends HttpServlet {
 
         int status = EmployeeRepository.save(employee);
         //out.println(status);
-
         if (status > 0) {
             out.print("Record saved successfully!");
         } else {
             out.println("Sorry! unable to save record");
         }
         out.close();
+
     }
 }
