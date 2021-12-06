@@ -27,8 +27,8 @@ public class EmployeeRepository {
             } else {
                 System.out.println("Failed to make connection!");
             }
-        } catch (SQLException sqlException) {
-            System.out.println(sqlException);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return connection;
     }
@@ -52,8 +52,9 @@ public class EmployeeRepository {
 
         } finally {
             try {
+                assert connection != null;
                 connection.close();
-            } catch (NullPointerException | SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -63,9 +64,11 @@ public class EmployeeRepository {
     public static int update(Employee employee) {
 
         int status = 0;
+        Connection connection = null;
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
+
+            connection = EmployeeRepository.getConnection();
             PreparedStatement ps = connection.prepareStatement(SQL_UPDATE);
             ps.setString(1, employee.getName());
             ps.setString(2, employee.getEmail());
@@ -73,10 +76,17 @@ public class EmployeeRepository {
             ps.setInt(4, employee.getId());
 
             status = ps.executeUpdate();
-            connection.close();
 
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                assert connection != null;
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return status;
     }
@@ -84,17 +94,24 @@ public class EmployeeRepository {
     public static int delete(int id) {
 
         int status = 0;
+        Connection connection = null;
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
+            connection = EmployeeRepository.getConnection();
             PreparedStatement ps = connection.prepareStatement(SQL_DELETE);
             ps.setInt(1, id);
             status = ps.executeUpdate();
 
-            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
 
-        } catch (SQLException exception) {
-            exception.printStackTrace();
+        } finally {
+            try {
+                assert connection != null;
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return status;
     }
@@ -102,22 +119,31 @@ public class EmployeeRepository {
     public static Employee getEmployeeById(int id) {
 
         Employee employee = new Employee();
+        Connection connection = null;
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
+            connection = EmployeeRepository.getConnection();
             PreparedStatement ps = connection.prepareStatement(SQL_GET_EMPLOYEE_BY_ID);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
                 employee.setId(rs.getInt(1));
                 employee.setName(rs.getString(2));
                 employee.setEmail(rs.getString(3));
                 employee.setCountry(rs.getString(4));
             }
-            connection.close();
 
-        } catch (SQLException exception) {
-            exception.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                assert connection != null;
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return employee;
     }
@@ -125,9 +151,10 @@ public class EmployeeRepository {
     public static List<Employee> getAllEmployees() {
 
         List<Employee> listEmployees = new ArrayList<>();
+        Connection connection = null;
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
+            connection = EmployeeRepository.getConnection();
             PreparedStatement ps = connection.prepareStatement(SQL_GET_ALL_EMPLOYEE);
             ResultSet rs = ps.executeQuery();
 
@@ -142,10 +169,17 @@ public class EmployeeRepository {
 
                 listEmployees.add(employee);
             }
-            connection.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
+
+        } finally {
+            try {
+                assert connection != null;
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return listEmployees;
     }
