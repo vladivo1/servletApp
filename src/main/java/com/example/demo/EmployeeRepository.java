@@ -12,7 +12,7 @@ public class EmployeeRepository {
     private static final String PASSWORD_POSTGRES = "postgres";
     private static final String SQL_SAVE = "insert into users(name,email,country) values (?,?,?)";
     private static final String SQL_UPDATE = "update users set name=?,email=?,country=? where id=?";
-    private static final String SQL_DELETE = "delete from users where id=?";
+    private static final String SQL_DELETE = "update users set status=true where id=?";
     private static final String SQL_GET_EMPLOYEE_BY_ID = "select * from users where id=?";
     private static final String SQL_GET_ALL_EMPLOYEE = "select * from users";
 
@@ -132,6 +132,7 @@ public class EmployeeRepository {
                 employee.setName(rs.getString(2));
                 employee.setEmail(rs.getString(3));
                 employee.setCountry(rs.getString(4));
+                employee.setStatus(rs.getBoolean(5));
             }
 
         } catch (SQLException e) {
@@ -166,6 +167,7 @@ public class EmployeeRepository {
                 employee.setName(rs.getString(2));
                 employee.setEmail(rs.getString(3));
                 employee.setCountry(rs.getString(4));
+                employee.setStatus(rs.getBoolean(5));
 
                 listEmployees.add(employee);
             }
