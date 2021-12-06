@@ -10,15 +10,10 @@ public class EmployeeRepository {
     private static final String URL_POSTGRES = "jdbc:postgresql://localhost:5432/employee";
     private static final String USER_POSTGRES = "postgres";
     private static final String PASSWORD_POSTGRES = "postgres";
-    private static final String SQL_SAVE = "insert into users(name,email,country) values (?,?,?)";
-    private static final String SQL_UPDATE = "update users set name=?,email=?,country=? where id=?";
-    private static final String SQL_DELETE = "update users set status=true where id=?";
-    private static final String SQL_GET_EMPLOYEE_BY_ID = "select * from users where id=?";
-    private static final String SQL_GET_ALL_EMPLOYEE = "select * from users";
+    private static Connection connection = null;
+
 
     public static Connection getConnection() {
-
-        Connection connection = null;
 
         try {
             connection = DriverManager.getConnection(URL_POSTGRES, USER_POSTGRES, PASSWORD_POSTGRES);
@@ -36,11 +31,10 @@ public class EmployeeRepository {
     public static int save(Employee employee) {
 
         int status = 0;
-        Connection connection = null;
 
         try {
             connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement(SQL_SAVE);
+            PreparedStatement ps = connection.prepareStatement("insert into users(name,email,country) values (?,?,?)");
             ps.setString(1, employee.getName());
             ps.setString(2, employee.getEmail());
             ps.setString(3, employee.getCountry());
@@ -64,12 +58,11 @@ public class EmployeeRepository {
     public static int update(Employee employee) {
 
         int status = 0;
-        Connection connection = null;
 
         try {
 
             connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement(SQL_UPDATE);
+            PreparedStatement ps = connection.prepareStatement("update users set name=?,email=?,country=? where id=?");
             ps.setString(1, employee.getName());
             ps.setString(2, employee.getEmail());
             ps.setString(3, employee.getCountry());
@@ -94,11 +87,10 @@ public class EmployeeRepository {
     public static int delete(int id) {
 
         int status = 0;
-        Connection connection = null;
 
         try {
             connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement(SQL_DELETE);
+            PreparedStatement ps = connection.prepareStatement("update users set is_delete = true where id=?");
             ps.setInt(1, id);
             status = ps.executeUpdate();
 
@@ -119,11 +111,10 @@ public class EmployeeRepository {
     public static Employee getEmployeeById(int id) {
 
         Employee employee = new Employee();
-        Connection connection = null;
 
         try {
             connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement(SQL_GET_EMPLOYEE_BY_ID);
+            PreparedStatement ps = connection.prepareStatement("select * from users where id=?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
@@ -132,7 +123,7 @@ public class EmployeeRepository {
                 employee.setName(rs.getString(2));
                 employee.setEmail(rs.getString(3));
                 employee.setCountry(rs.getString(4));
-                employee.setStatus(rs.getBoolean(5));
+                employee.setDelete(rs.getBoolean(5));
             }
 
         } catch (SQLException e) {
@@ -152,11 +143,10 @@ public class EmployeeRepository {
     public static List<Employee> getAllEmployees() {
 
         List<Employee> listEmployees = new ArrayList<>();
-        Connection connection = null;
 
         try {
             connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement(SQL_GET_ALL_EMPLOYEE);
+            PreparedStatement ps = connection.prepareStatement("select * from users");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -167,7 +157,7 @@ public class EmployeeRepository {
                 employee.setName(rs.getString(2));
                 employee.setEmail(rs.getString(3));
                 employee.setCountry(rs.getString(4));
-                employee.setStatus(rs.getBoolean(5));
+                employee.setDelete(rs.getBoolean(5));
 
                 listEmployees.add(employee);
             }

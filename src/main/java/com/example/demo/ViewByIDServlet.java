@@ -19,7 +19,7 @@ public class ViewByIDServlet extends HttpServlet {
         int id = Integer.parseInt(sid);
 
         Employee employee = EmployeeRepository.getEmployeeById(id);
-        if (employee.isStatus()) {
+        if (employee.isDelete()) {
             out.println("Your account has been delete");
         } else {
 
